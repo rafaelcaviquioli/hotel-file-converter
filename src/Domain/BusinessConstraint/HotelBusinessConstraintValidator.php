@@ -2,9 +2,7 @@
 
 namespace App\Domain\BusinessConstraint;
 
-use App\Domain\Model\HotelModel;
-
-class ValidateHotelBusinessConstraint implements IValidateBusinessConstraint
+class HotelBusinessConstraintValidator implements IBusinessConstraintValidator
 {
     private $errors = [];
 
@@ -14,7 +12,7 @@ class ValidateHotelBusinessConstraint implements IValidateBusinessConstraint
             $this->errors[] = "The hotel name '$name' may not contain non-ASCII characters.";
         }
     }
-    private function validateValidUri(string $uri): void
+    private function validateRequiredUri(string $uri): void
     {
         $uriTrim = $uri;
 
@@ -22,7 +20,7 @@ class ValidateHotelBusinessConstraint implements IValidateBusinessConstraint
             $this->errors[] = "The hotel uri is required.";
         }
     }
-    private function validateRequiredUri(string $uri): void
+    private function validateValidUri(string $uri): void
     {
         if (filter_var($uri, FILTER_VALIDATE_URL) === false) {
             $this->errors[] = "The hotel uri '{$uri}' is not a valid URL.";
@@ -31,7 +29,7 @@ class ValidateHotelBusinessConstraint implements IValidateBusinessConstraint
     private function validateStars(int $stars): void
     {
         if ($stars < 0 || $stars > 5) {
-            $this->errors[] = "The stars '$stars' is invalid";
+            $this->errors[] = "The hotel stars '$stars' is invalid. Hotel ratings may be from 0 to 5 stars";
         }
     }
 
@@ -40,7 +38,7 @@ class ValidateHotelBusinessConstraint implements IValidateBusinessConstraint
         $this->errors = [];
     }
 
-    public function getValidateErrors($model) : array
+    public function validate($model) : array
     {
         $this->clearErros();
 
