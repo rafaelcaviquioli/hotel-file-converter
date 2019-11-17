@@ -3,6 +3,7 @@
 namespace App\Domain\Service\HotelFileConvertService\Converters;
 
 use Iterator;
+use League\Csv\Writer;
 
 class StrategyCsvHotelFileConverter implements IStrategyHotelFileConverter
 {
@@ -11,27 +12,24 @@ class StrategyCsvHotelFileConverter implements IStrategyHotelFileConverter
     {
         foreach ($hotels as $hotel) {
             $hotelFields = [
-                'name' => $hotel->getName(),
-                'address' => $hotel->getAddress(),
-                'stars' => $hotel->getStars(),
-                'contact' => $hotel->getContact(),
-                'phone' => $hotel->getPhone(),
-                'uri' => $hotel->getUri()
+                $hotel->getName(),
+                $hotel->getAddress(),
+                $hotel->getStars(),
+                $hotel->getContact(),
+                $hotel->getPhone(),
+                $hotel->getUri()
             ];
-            
-            yield $this->arrayToCsvString($hotelFields) . PHP_EOL;
+
+            yield self::arrayToCsvString($hotelFields);
         }
     }
 
     private static function arrayToCsvString(array $fields): string
     {
-        $f = fopen('php://memory', 'r+');
-        if (fputcsv($f, $fields) === false) {
-            return false;
-        }
-        rewind($f);
-        $csv_line = stream_get_contents($f);
+        $writer = Writer::createFromString();
+        $writer->insertOne($fields);
+        $csvContent = $writer->getContent();
 
-        return rtrim($csv_line);
+        return $csvContent;
     }
 }
