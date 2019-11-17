@@ -37,6 +37,7 @@ class HotelFileConvertService
                 throw new Exception("Was not possible get the strategy to this file extention: '$inputFileExtension'");
         }
     }
+
     private function getOutputFileStrategy(string $outputFilePath): IStrategyHotelFileConverter
     {
         $outputFilePathInfo = pathinfo($outputFilePath);
@@ -60,7 +61,7 @@ class HotelFileConvertService
         $this->inputFileStrategy = $this->getInputFileStrategy($filePath);
     }
 
-    public function getHotels(): array
+    private function getHotels(): array
     {
         if ($this->inputFileStrategy == null) {
             throw new Exception("Was not possible to get hotels because don't have defined strategy yet.");
@@ -68,6 +69,7 @@ class HotelFileConvertService
 
         return $this->inputFileStrategy->getHotels();
     }
+
     public function convert(string $outputFilePath)
     {
         $outputFileStrategy = $this->getOutputFileStrategy($outputFilePath);
