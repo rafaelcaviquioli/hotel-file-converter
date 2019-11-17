@@ -23,6 +23,15 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $errors = $validator->validate($hotelModel);
 
         $this->assertEmpty($errors);
+        $this->assertFalse($validator->hasErrors());
+    }
+    public function testHasErrors_ShoudReturnTrue_WhenHotelModelContainValidationErrors()
+    {
+        $hotelModelTenStars = new HotelModel("", "", -1, "", "", "");
+        $validator = new HotelBusinessConstraintValidator();
+        $errors = $validator->validate($hotelModelTenStars);
+
+        $this->assertTrue($validator->hasErrors());
     }
     public function testGetValidateErrors_ShoudReturnHotelNameError_WhenHotelNameIsNotValid()
     {
@@ -110,5 +119,4 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $this->assertCount(1, $errors);
         $this->assertEquals("The hotel stars '-1' is invalid. Hotel ratings may be from 0 to 5 stars", $errors[0]);
     }
-
 }

@@ -2,15 +2,20 @@
 
 namespace App\Domain\Service\HotelFileConvertService;
 
+use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
 use App\Domain\Model\HotelModel;
 
 class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
 {
     private $hotelsJsonDecoded;
+    private $hotelBusinessConstraintValidator;
 
-    public function __construct(string $fileContent)
-    {
+    public function __construct(
+        string $fileContent,
+        HotelBusinessConstraintValidator $hotelBusinessConstraintValidator
+    ) {
         $this->hotelsJsonDecoded = json_decode($fileContent, true);
+        $this->hotelBusinessConstraintValidator = $hotelBusinessConstraintValidator;
     }
 
     public function getHotels(): array
@@ -20,15 +25,21 @@ class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
         }
 
         $hotels = [];
-        foreach ($this->hotelsJsonDecoded as $hotel) {
-            $hotels[] = new HotelModel(
-                $hotel['name'],
-                $hotel['address'],
-                $hotel['stars'],
-                $hotel['contact'],
-                $hotel['phone'],
-                $hotel['uri']
+        foreach ($this->hotelsJsonDecoded as $hotelObject) {
+            $hotelModel = new HotelModel(
+                $hotelObject['name'],
+                $hotelObject['address'],
+                $hotelObject['stars'],
+                $hotelObject['contact'],
+                $hotelObject['phone'],
+                $hotelObject['uri']
             );
+
+            $this->hotelBusinessConstraintValidator->validate($hotelModel);
+
+            if (!$this->hotelBusinessConstraintValidator->hasErrors()) {
+                $hotels[] = $hotelModel;
+            }
         }
 
         return $hotels;

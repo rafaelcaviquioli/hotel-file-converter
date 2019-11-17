@@ -38,7 +38,7 @@ class HotelBusinessConstraintValidator implements IBusinessConstraintValidator
         $this->errors = [];
     }
 
-    public function validate($model) : array
+    public function validate($model): array
     {
         $this->clearErros();
 
@@ -48,5 +48,10 @@ class HotelBusinessConstraintValidator implements IBusinessConstraintValidator
         $this->validateStars($model->getStars());
 
         return $this->errors;
+    }
+
+    public function hasErrors(): bool
+    {
+        return count($this->errors) > 0;
     }
 }
