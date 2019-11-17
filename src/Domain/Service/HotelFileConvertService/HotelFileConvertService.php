@@ -22,10 +22,10 @@ class HotelFileConvertService
         $this->hotelBusinessConstraintValidator = $hotelBusinessConstraintValidator;
     }
 
-    private function getInputFileStrategy($inputFilePath): IStrategyHotelFileParser
+    private function getInputFileStrategy($sourceFilePath): IStrategyHotelFileParser
     {
-        $inputFilePathInfo = pathinfo($inputFilePath);
-        $inputFileExtension = $inputFilePathInfo['extension'];
+        $sourceFilePathInfo = pathinfo($sourceFilePath);
+        $inputFileExtension = $sourceFilePathInfo['extension'];
         switch ($inputFileExtension) {
             case "json";
                 return new StrategyJsonHotelFileParser($this->fileContent, $this->hotelBusinessConstraintValidator);
@@ -61,16 +61,16 @@ class HotelFileConvertService
         return $this->inputFileStrategy->getHotels();
     }
 
-    public function openFile(string $filePath): void
+    public function openFile(string $sourceFilePath): void
     {
-        if (!file_exists($filePath)) {
-            throw new Exception("Was not possible open the file: '$filePath'");
+        if (!file_exists($sourceFilePath)) {
+            throw new Exception("Was not possible open the file: '$sourceFilePath'");
         }
-        $this->fileContent = file_get_contents($filePath);
-        $this->inputFileStrategy = $this->getInputFileStrategy($filePath);
+        $this->fileContent = file_get_contents($sourceFilePath);
+        $this->inputFileStrategy = $this->getInputFileStrategy($sourceFilePath);
     }
     
-    public function convert(string $outputFilePath)
+    public function convert(string $outputFilePath) : void
     {
         $outputFileStrategy = $this->getOutputFileStrategy($outputFilePath);
         $hotels = $this->getHotels();
