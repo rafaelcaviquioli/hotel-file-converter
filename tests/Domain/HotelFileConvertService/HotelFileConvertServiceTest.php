@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Tests\Domain\HotelFileConvertService;
+namespace App\Tests\HotelFileConvertService;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
 use App\Domain\Service\HotelFileConvertService\HotelFileConvertService;
+use App\Tests\Helpers\HotelFileTestHelper;
 use Exception;
 use PHPUnit\Framework\TestCase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Domain\HotelFileConvertService;
+namespace App\Tests\Helpers;
 
 class HotelFileTestHelper
 {

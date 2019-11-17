@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Domain\HotelFileConvertService;
+namespace App\Tests\HotelFileConvertService;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyXmlHotelFileParser;

@@ -35,5 +35,7 @@ class ConvertHotelsFileCommand extends Command
 
         $this->hotelFileConvertService->openFile($sourceFilePath);
         $this->hotelFileConvertService->convert($outputFilePath);
+
+        $output->writeln('Conversion finished with successfully!');
     }
 }
