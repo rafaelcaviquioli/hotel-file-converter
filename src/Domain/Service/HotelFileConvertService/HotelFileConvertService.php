@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Domain\Service\HotelImportService;
+namespace App\Domain\Service\HotelFileConvertService;
 
 use Exception;
 
-class StrategyHotelImportService
+class HotelFileConvertService
 {
     private $strategy;
+    private $fileContent;
 
     private function getStrategyAccordingFileExtension($filePath): IStrategyHotelFileParser
     {
@@ -14,13 +15,13 @@ class StrategyHotelImportService
         $extension = $filePathInfo['extension'];
         switch ($extension) {
             case "json";
-                return new StrategyJsonFileParser($filePath);
+                return new StrategyJsonFileParser($this->fileContent);
 
             case "xml":
-                return new StrategyXmlFileParser($filePath);
+                return new StrategyXmlFileParser($this->fileContent);
 
             default:
-                throw new Exception("Was not possible get the strategy to this file extention: '$fileExtension'");
+                throw new Exception("Was not possible get the strategy to this file extention: '$extension'");
         }
     }
 
@@ -34,7 +35,7 @@ class StrategyHotelImportService
     public function openFile($filePath): void
     {
         $this->validateFileExists($filePath);
-
+        $this->fileContent = file_get_contents($filePath);
         $this->strategy = $this->getStrategyAccordingFileExtension($filePath);
     }
 
