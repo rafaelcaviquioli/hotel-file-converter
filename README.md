@@ -2,11 +2,11 @@
 
 [Repository available on Gitlab: gitlab.com/rafaelcaviquioli/hotel-file-converter](https://gitlab.com/rafaelcaviquioli/hotel-file-converter)
 
-#### What is it?
+#### Goals
 
-This is a tool that convert data from hotels. Currently, it allows convert XML and JSON sources to CSV outputs. But the tool architecture was designed to be extensible, you can implement new strategies to sources (parsers) and outputs (converters). The application will choose the appropriate strategy implementation to convert each file extension.
+This is a tool that converts data from hotels. Currently, it allows convert XML and JSON sources to CSV outputs. But the tool architecture was designed to be extensible, you can implement new strategies to sources (parsers) and outputs (converters). The application will choose the appropriate strategy implementation to convert each file extension.
 
-#### How it works step by step?
+#### How it works
 
 - 1. The user run command to convert file through command line interface setting the source and  intended output file.
 - 2. Verify the source file and define appropriated strategy to parse data according its extensions.
@@ -38,6 +38,8 @@ $ docker-compose run --rm php-fpm php bin/phpunit
 ```
 
 #### Convert hotels from json file
+
+`Caution: `
 
 ```bash
 $ docker-compose run --rm \
