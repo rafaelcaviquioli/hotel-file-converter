@@ -10,5 +10,7 @@ interface IStrategyHotelFileParser
         string $fileContent,
         HotelBusinessConstraintValidator $hotelBusinessConstraintValidator
     );
+
+    /** @return App\Domain\Model\HotelModel[] */
     public function getHotels(): array;
 }

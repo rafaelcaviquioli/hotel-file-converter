@@ -29,7 +29,7 @@ class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
             $hotelModel = new HotelModel(
                 $hotelObject['name'],
                 $hotelObject['address'],
-                $hotelObject['stars'],
+                (int) $hotelObject['stars'],
                 $hotelObject['contact'],
                 $hotelObject['phone'],
                 $hotelObject['uri']
