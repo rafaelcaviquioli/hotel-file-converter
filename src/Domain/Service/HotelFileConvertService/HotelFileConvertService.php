@@ -41,7 +41,7 @@ class HotelFileConvertService
     {
         $outputFilePathInfo = pathinfo($outputFilePath);
         $outputFileExtension = $outputFilePathInfo['extension'];
-        
+
         switch ($outputFileExtension) {
             case "csv":
                 return new StrategyCsvHotelFileConverter();
@@ -72,9 +72,11 @@ class HotelFileConvertService
     {
         $outputFileStrategy = $this->getOutputFileStrategy($outputFilePath);
         $hotels = $this->getHotels();
-        $outputCsvContent = $outputFileStrategy->convert($hotels);
 
-        // Open refactor to stream writter
-        file_put_contents($outputFilePath, $outputCsvContent);
+        $outputFilePointer = fopen($outputFilePath, 'w');
+        foreach ($outputFileStrategy->convert($hotels) as $hotelCsvLine) {
+            fwrite($outputFilePointer, $hotelCsvLine);
+        }
+        fclose($outputFilePointer);
     }
 }

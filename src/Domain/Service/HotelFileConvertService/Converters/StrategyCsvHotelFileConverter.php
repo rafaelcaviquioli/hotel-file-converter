@@ -2,13 +2,13 @@
 
 namespace App\Domain\Service\HotelFileConvertService\Converters;
 
+use Iterator;
+
 class StrategyCsvHotelFileConverter implements IStrategyHotelFileConverter
 {
     /** @param App\Domain\Model\HotelModel[] $hotels */
-    public function convert(array $hotels): string
+    public function convert(array $hotels): Iterator
     {
-        $csvContent = "";
-        
         foreach ($hotels as $hotel) {
             $hotelFields = [
                 'name' => $hotel->getName(),
@@ -19,10 +19,8 @@ class StrategyCsvHotelFileConverter implements IStrategyHotelFileConverter
                 'uri' => $hotel->getUri()
             ];
             
-            $csvContent .= $this->arrayToCsvString($hotelFields) . PHP_EOL;
+            yield $this->arrayToCsvString($hotelFields) . PHP_EOL;
         }
-
-        return $csvContent;
     }
 
     private static function arrayToCsvString(array $fields): string
