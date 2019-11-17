@@ -20,11 +20,11 @@ class StrategyCsvHotelFileConverter implements IStrategyHotelFileConverter
                 $hotel->getUri()
             ];
 
-            yield self::arrayToCsvString($hotelFields);
+            yield self::arrayToCsv($hotelFields);
         }
     }
 
-    private static function arrayToCsvString(array $fields): string
+    private static function arrayToCsv(array $fields): string
     {
         $writer = Writer::createFromString();
         $writer->insertOne($fields);

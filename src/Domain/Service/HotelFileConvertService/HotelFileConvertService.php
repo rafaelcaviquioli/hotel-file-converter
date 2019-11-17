@@ -52,15 +52,6 @@ class HotelFileConvertService
         }
     }
 
-    public function openFile(string $filePath): void
-    {
-        if (!file_exists($filePath)) {
-            throw new Exception("Was not possible open the file: '$filePath'");
-        }
-        $this->fileContent = file_get_contents($filePath);
-        $this->inputFileStrategy = $this->getInputFileStrategy($filePath);
-    }
-
     private function getHotels(): array
     {
         if ($this->inputFileStrategy == null) {
@@ -70,6 +61,15 @@ class HotelFileConvertService
         return $this->inputFileStrategy->getHotels();
     }
 
+    public function openFile(string $filePath): void
+    {
+        if (!file_exists($filePath)) {
+            throw new Exception("Was not possible open the file: '$filePath'");
+        }
+        $this->fileContent = file_get_contents($filePath);
+        $this->inputFileStrategy = $this->getInputFileStrategy($filePath);
+    }
+    
     public function convert(string $outputFilePath)
     {
         $outputFileStrategy = $this->getOutputFileStrategy($outputFilePath);
