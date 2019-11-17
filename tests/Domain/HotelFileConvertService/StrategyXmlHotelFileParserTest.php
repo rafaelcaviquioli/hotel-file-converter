@@ -3,7 +3,7 @@
 namespace App\Tests\Domain\HotelFileConvertService;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
-use App\Domain\Service\HotelFileConvertService\StrategyXmlHotelFileParser;
+use App\Domain\Service\HotelFileConvertService\Parsers\StrategyXmlHotelFileParser;
 use PHPUnit\Framework\TestCase;
 
 class StrategyXmlHotelFileParserTest extends TestCase

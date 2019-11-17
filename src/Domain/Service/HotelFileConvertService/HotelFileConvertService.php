@@ -3,6 +3,9 @@
 namespace App\Domain\Service\HotelFileConvertService;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
+use App\Domain\Service\HotelFileConvertService\Parsers\IStrategyHotelFileParser;
+use App\Domain\Service\HotelFileConvertService\Parsers\StrategyJsonHotelFileParser;
+use App\Domain\Service\HotelFileConvertService\Parsers\StrategyXmlHotelFileParser;
 use Exception;
 
 class HotelFileConvertService
@@ -33,16 +36,11 @@ class HotelFileConvertService
         }
     }
 
-    private function validateFileExists($filePath)
+    public function openFile($filePath): void
     {
         if (!file_exists($filePath)) {
             throw new Exception("Was not possible open the file: '$filePath'");
         }
-    }
-
-    public function openFile($filePath): void
-    {
-        $this->validateFileExists($filePath);
         $this->fileContent = file_get_contents($filePath);
         $this->strategy = $this->getStrategyAccordingFileExtension($filePath);
     }

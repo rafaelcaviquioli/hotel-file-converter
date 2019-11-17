@@ -3,7 +3,7 @@
 namespace App\Tests\Domain\HotelFileConvertService;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
-use App\Domain\Service\HotelFileConvertService\StrategyJsonHotelFileParser;
+use App\Domain\Service\HotelFileConvertService\Parsers\StrategyJsonHotelFileParser;
 use PHPUnit\Framework\TestCase;
 
 class StrategyJsonHotelFileParserTest extends TestCase
