@@ -2,9 +2,18 @@
 
 namespace App\Domain\BusinessConstraint;
 
+use Psr\Log\LoggerInterface;
+
 class HotelBusinessConstraintValidator implements IBusinessConstraintValidator
 {
+    private $logger;
     private $errors = [];
+
+    public function __construct(
+        LoggerInterface $logger
+    ) {
+        $this->logger = $logger;
+    }
 
     private function validateName(string $name): void
     {
@@ -38,7 +47,7 @@ class HotelBusinessConstraintValidator implements IBusinessConstraintValidator
         $this->errors = [];
     }
 
-    public function validate($model): array
+    public function validate(int $index, $model): array
     {
         $this->clearErros();
 
@@ -47,9 +56,18 @@ class HotelBusinessConstraintValidator implements IBusinessConstraintValidator
         $this->validateRequiredUri($model->getUri());
         $this->validateStars($model->getStars());
 
+        if ($this->hasErrors()) {
+            $this->logValidationWarning($index);
+        }
+
         return $this->errors;
     }
-
+    private function logValidationWarning(int $index)
+    {
+        foreach ($this->errors as $error) {
+            $this->logger->error($error, ['dataIndex' => $index]);
+        }
+    }
     public function hasErrors(): bool
     {
         return count($this->errors) > 0;

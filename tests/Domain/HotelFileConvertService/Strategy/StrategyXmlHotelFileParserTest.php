@@ -5,9 +5,19 @@ namespace App\Tests\HotelFileConvertService;
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyXmlHotelFileParser;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class StrategyXmlHotelFileParserTest extends TestCase
 {
+    private $validator;
+
+    public function __construct()
+    {
+        $this->validator = new HotelBusinessConstraintValidator($this->createMock(LoggerInterface::class));
+
+        parent::__construct();
+    }
+
     public function testGetHotels_ShouldReturnListOfHotelModelWithTwoItems_WhenConvertAXmlFileWithTwoHotels()
     {
         $hotelsXml = <<<XML
@@ -31,7 +41,7 @@ class StrategyXmlHotelFileParserTest extends TestCase
 </hotel>
 </hotels>
 XML;
-        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($hotelsXml, new HotelBusinessConstraintValidator());
+        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($hotelsXml, $this->validator);
         $hotels = $strategyXmlHotelFileParser->getHotels();
         $this->assertCount(2, $hotels);
         $this->assertEquals("The Gibson", $hotels[0]->getName());
@@ -66,7 +76,7 @@ XML;
 </hotels>
 XML;
 
-        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($hotelsXml, new HotelBusinessConstraintValidator());
+        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($hotelsXml, $this->validator);
         $hotels = $strategyXmlHotelFileParser->getHotels();
         $this->assertCount(1, $hotels);
         $this->assertEquals("http://www.farina.org/blog/categories/tags/about.html", $hotels[0]->getUri());
@@ -78,7 +88,7 @@ XML;
 <?xml version="1.0" encoding="UTF-8"?>
 <hotels></hotels>     
 XML;
-        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($emptyHotelsXml, new HotelBusinessConstraintValidator());
+        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($emptyHotelsXml, $this->validator);
         $hotels = $strategyXmlHotelFileParser->getHotels();
         $this->assertCount(0, $hotels);
     }

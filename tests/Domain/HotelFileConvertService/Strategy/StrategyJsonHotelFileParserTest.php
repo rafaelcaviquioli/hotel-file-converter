@@ -5,9 +5,18 @@ namespace App\Tests\HotelFileConvertService;
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyJsonHotelFileParser;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class StrategyJsonHotelFileParserTest extends TestCase
 {
+    private $validator;
+
+    public function __construct()
+    {
+        $this->validator = new HotelBusinessConstraintValidator($this->createMock(LoggerInterface::class));
+
+        parent::__construct();
+    }
     public function testGetHotels_ShouldReturnListOfHotelModelWithTwoItems_WhenConvertAJsonFileWithTwoHotels()
     {
         $hotelsJson = <<<JSON
@@ -30,7 +39,7 @@ class StrategyJsonHotelFileParserTest extends TestCase
     }
 ]
 JSON;
-        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($hotelsJson, new HotelBusinessConstraintValidator());
+        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($hotelsJson, $this->validator);
         $hotels = $strategyJsonHotelFileParser->getHotels();
         $this->assertCount(2, $hotels);
         $this->assertEquals("The Gibson", $hotels[0]->getName());
@@ -63,7 +72,7 @@ JSON;
     }
 ]
 JSON;
-        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($hotelsJson, new HotelBusinessConstraintValidator());
+        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($hotelsJson, $this->validator);
         $hotels = $strategyJsonHotelFileParser->getHotels();
         $this->assertCount(1, $hotels);
         $this->assertEquals("http://www.farina.org/blog/categories/tags/about.html", $hotels[0]->getUri());
@@ -72,7 +81,7 @@ JSON;
     public function testGetHotels_ShouldReturnEmptyList_WhenThereAreNoHotelsOnJsonFile()
     {
         $emptyHotelsJson = "[]";
-        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($emptyHotelsJson, new HotelBusinessConstraintValidator());
+        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($emptyHotelsJson, $this->validator);
         $hotels = $strategyJsonHotelFileParser->getHotels();
         $this->assertCount(0, $hotels);
     }

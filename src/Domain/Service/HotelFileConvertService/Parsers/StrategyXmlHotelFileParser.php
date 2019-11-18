@@ -25,7 +25,9 @@ class StrategyXmlHotelFileParser implements IStrategyHotelFileParser
         }
 
         $hotels = [];
-        foreach ($this->hotelsXml->hotel as $hotelObject) {
+        for ($index = 0; $index < count($this->hotelsXml->hotel); $index++) {
+            $hotelObject = $this->hotelsXml->hotel[$index];
+
             $hotelModel = new HotelModel(
                 $hotelObject->name,
                 $hotelObject->address,
@@ -35,7 +37,7 @@ class StrategyXmlHotelFileParser implements IStrategyHotelFileParser
                 $hotelObject->uri
             );
 
-            $this->hotelBusinessConstraintValidator->validate($hotelModel);
+            $this->hotelBusinessConstraintValidator->validate($index, $hotelModel);
 
             if (!$this->hotelBusinessConstraintValidator->hasErrors()) {
                 $hotels[] = $hotelModel;

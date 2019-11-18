@@ -25,7 +25,9 @@ class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
         }
 
         $hotels = [];
-        foreach ($this->hotelsJsonDecoded as $hotelObject) {
+        for ($index = 0; $index < count($this->hotelsJsonDecoded); $index++) {
+            $hotelObject = $this->hotelsJsonDecoded[$index];
+
             $hotelModel = new HotelModel(
                 $hotelObject['name'],
                 $hotelObject['address'],
@@ -35,7 +37,7 @@ class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
                 $hotelObject['uri']
             );
 
-            $this->hotelBusinessConstraintValidator->validate($hotelModel);
+            $this->hotelBusinessConstraintValidator->validate($index, $hotelModel);
 
             if (!$this->hotelBusinessConstraintValidator->hasErrors()) {
                 $hotels[] = $hotelModel;
