@@ -9,17 +9,21 @@ use App\Domain\Service\HotelFileConvertService\Parsers\IStrategyHotelFileParser;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyJsonHotelFileParser;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyXmlHotelFileParser;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 class HotelFileConvertService
 {
     private $inputFileStrategy;
     private $fileContent;
     private $hotelBusinessConstraintValidator;
+    private $logger;
 
     public function __construct(
-        HotelBusinessConstraintValidator $hotelBusinessConstraintValidator
+        HotelBusinessConstraintValidator $hotelBusinessConstraintValidator,
+        LoggerInterface $logger
     ) {
         $this->hotelBusinessConstraintValidator = $hotelBusinessConstraintValidator;
+        $this->logger = $logger;
     }
 
     private function getInputFileStrategy($sourceFilePath): IStrategyHotelFileParser
@@ -69,11 +73,14 @@ class HotelFileConvertService
         $this->fileContent = file_get_contents($sourceFilePath);
         $this->inputFileStrategy = $this->getInputFileStrategy($sourceFilePath);
     }
-    
-    public function convert(string $outputFilePath) : void
+
+    public function convert(string $outputFilePath): void
     {
         $outputFileStrategy = $this->getOutputFileStrategy($outputFilePath);
         $hotels = $this->getHotels();
+        $totalHotels = count($hotels);
+
+        $this->logger->notice("Starting conversion of $totalHotels valid hotels.");
 
         $outputFilePointer = fopen($outputFilePath, 'w');
         foreach ($outputFileStrategy->convert($hotels) as $hotelCsvLine) {

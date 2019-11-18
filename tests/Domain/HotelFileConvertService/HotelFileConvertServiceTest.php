@@ -7,12 +7,21 @@ use App\Domain\Service\HotelFileConvertService\HotelFileConvertService;
 use App\Tests\Helpers\HotelFileTestHelper;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class HotelFileConvertServiceTest extends TestCase
 {
+    private $logger;
+
+    public function __construct()
+    {
+        $this->logger = $this->createMock(LoggerInterface::class);
+
+        parent::__construct();
+    }
     public function testConvert_ShoudThrowException_WhenDontHaveDefinedStrategy()
     {
-        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator);
+        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator(), $this->logger);
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Was not possible to get hotels because don't have defined strategy yet.");
         $hotelFileConvertService->convert("./whateverOutputFile.csv");
@@ -23,7 +32,7 @@ class HotelFileConvertServiceTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Was not possible open the file: './nonexistentInputFile.json'");
 
-        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator);
+        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator(), $this->logger);
         $hotelFileConvertService->openFile("./nonexistentInputFile.json");
     }
 
@@ -34,7 +43,7 @@ class HotelFileConvertServiceTest extends TestCase
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
 
         /* Use case execution */
-        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator);
+        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator(), $this->logger);
         $hotelFileConvertService->openFile($inputFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
@@ -62,7 +71,7 @@ class HotelFileConvertServiceTest extends TestCase
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-empty-" . microtime() . ".csv";
 
         /* Use case execution */
-        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator);
+        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator(), $this->logger);
         $hotelFileConvertService->openFile($inputFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
@@ -84,7 +93,7 @@ class HotelFileConvertServiceTest extends TestCase
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
 
         /* Use case execution */
-        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator);
+        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator(), $this->logger);
         $hotelFileConvertService->openFile($inputFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
@@ -112,7 +121,7 @@ class HotelFileConvertServiceTest extends TestCase
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-empty-" . microtime() . ".csv";
 
         /* Use case execution */
-        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator);
+        $hotelFileConvertService = new HotelFileConvertService(new HotelBusinessConstraintValidator(), $this->logger);
         $hotelFileConvertService->openFile($inputFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
