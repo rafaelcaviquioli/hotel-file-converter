@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\HotelFileConvertService;
+namespace App\Tests\Domain\Service\HotelFileConvertService\Parsers;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyJsonHotelFileParser;
