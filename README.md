@@ -37,16 +37,25 @@ $ docker-compose run --rm php-fpm composer install
 $ docker-compose run --rm php-fpm php bin/phpunit
 ```
 
-#### Convert hotels from json file
+## Tool commands
 
-`Caution: `
+`Caution: To convert other files you need ensure that the files are accessible inside Docker environment. For it, put your files on ./playground/sourceFiles or create a new volume between your machine and docker container.`
+
+#### Logs
+
+You can keep looking for errors, warnings and hotel model validation problems through log execution:
+
+- Use `-v` argument to active verbose mode and watch log during the converting execution.
+- Logs will be persist on file: `./logs/hotel-convert-dev.log`.
+
+#### Convert hotels from json file
 
 ```bash
 $ docker-compose run --rm \
     php-fpm php bin/console \
     app:convert-hotels-file \
     ./playground/sourceFiles/hotels.json \
-    ./playground/outputFiled/convertedHotelsFromJson.csv
+    ./playground/outputFiled/convertedHotelsFromJson.csv -v
 ```
 
 #### Convert hotels from xml file
@@ -56,5 +65,5 @@ $ docker-compose run --rm \
     php-fpm php bin/console \
     app:convert-hotels-file \
     ./playground/sourceFiles/hotels.xml \
-    ./playground/outputFiled/convertedHotelsFromXml.csv
+    ./playground/outputFiled/convertedHotelsFromXml.csv -v
 ```

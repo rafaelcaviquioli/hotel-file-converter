@@ -42,7 +42,6 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
         $this->assertEquals($expectLine2, $csvArrayLines[1]);
         $this->assertEquals("", $csvArrayLines[2]);
         $this->assertCount(3, $csvArrayLines);
-        $this->assertContains('Conversion finished with successfully', $commandTester->getDisplay());
     }
 
     public function testExecute_ShouldRequireSourceAndOutputPathArguments()

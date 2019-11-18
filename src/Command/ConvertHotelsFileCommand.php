@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Domain\Service\HotelFileConvertService\HotelFileConvertService;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,10 +14,14 @@ class ConvertHotelsFileCommand extends Command
 {
     protected static $defaultName = 'app:convert-hotels-file';
     private $hotelFileConvertService;
+    private $logger;
 
-    public function __construct(HotelFileConvertService $hotelFileConvertService)
-    {
+    public function __construct(
+        HotelFileConvertService $hotelFileConvertService,
+        LoggerInterface $logger
+    ) {
         $this->hotelFileConvertService = $hotelFileConvertService;
+        $this->logger = $logger;
 
         parent::__construct();
     }
@@ -30,12 +36,16 @@ class ConvertHotelsFileCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $sourceFilePath = $input->getArgument('sourceFilePath');
-        $outputFilePath = $input->getArgument('outputFilePath');
+        try {
+            $sourceFilePath = $input->getArgument('sourceFilePath');
+            $outputFilePath = $input->getArgument('outputFilePath');
 
-        $this->hotelFileConvertService->openFile($sourceFilePath);
-        $this->hotelFileConvertService->convert($outputFilePath);
+            $this->hotelFileConvertService->openFile($sourceFilePath);
+            $this->hotelFileConvertService->convert($outputFilePath);
 
-        $output->writeln('Conversion finished with successfully!');
+            $this->logger->notice('Conversion finished with successfully!');
+        } catch (Exception $exeption) {
+            $this->logger->error($exeption->getMessage());
+        }
     }
 }
