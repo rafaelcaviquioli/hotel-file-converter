@@ -3,6 +3,7 @@
 namespace App\Tests\Domain\Service\HotelFileConvertService\Parsers;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
+use App\Domain\Model\HotelModel;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyJsonHotelFileParser;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -24,7 +25,7 @@ class StrategyJsonHotelFileParserTest extends TestCase
     {
         "name": "The Gibson",
         "address": "63847 Lowe Knoll",
-        "stars": "5",
+        "stars": 5,
         "contact": "Dr. Sinda Wyman",
         "phone": "1-270-665-9933x1626",
         "uri": "http:\/\/www.paucek.com\/search.htm"
@@ -32,7 +33,7 @@ class StrategyJsonHotelFileParserTest extends TestCase
     {
         "name": "Martini Cattaneo",
         "address": "Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)",
-        "stars": "5",
+        "stars": 5,
         "contact": "Rosalino Marchetti",
         "phone": "+39 627 68225719",
         "uri": "http:\/\/www.farina.org\/blog\/categories\/tags\/about.html"
@@ -57,7 +58,7 @@ JSON;
     {
         "name": "The Gibson",
         "address": "63847 Lowe Knoll",
-        "stars": "5",
+        "stars": 5,
         "contact": "Dr. Sinda Wyman",
         "phone": "1-270-665-9933x1626",
         "uri": "that's an invalid uri"
@@ -65,7 +66,7 @@ JSON;
     {
         "name": "Martini Cattaneo",
         "address": "Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)",
-        "stars": "5",
+        "stars": 5,
         "contact": "Rosalino Marchetti",
         "phone": "+39 627 68225719",
         "uri": "http:\/\/www.farina.org\/blog\/categories\/tags\/about.html"
@@ -84,5 +85,47 @@ JSON;
         $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($emptyHotelsJson, $this->validator);
         $hotels = $strategyJsonHotelFileParser->getHotels();
         $this->assertCount(0, $hotels);
+    }
+
+    public function testGetHotels_ShouldConvertHotelsAndApplyTheFilter_WhenAFilterIsPassed()
+    {
+        $hotelsJson = <<<JSON
+[
+    {
+        "name": "The Gibson",
+        "address": "63847 Lowe Knoll",
+        "stars": 5,
+        "contact": "Dr. Sinda Wyman",
+        "phone": "1-270-665-9933x1626",
+        "uri": "http:\/\/www.paucek.com\/search.htm"
+    },
+    {
+        "name": "Martini Cattaneo",
+        "address": "Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)",
+        "stars": 5,
+        "contact": "Rosalino Marchetti",
+        "phone": "+39 627 68225719",
+        "uri": "http:\/\/www.farina.org\/blog\/categories\/tags\/about.html"
+    },
+    {
+        "name": "Hotel Sandri",
+        "address": "Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)",
+        "stars": 5,
+        "contact": "Rafael Caviquioli",
+        "phone": "+39 627 68225719",
+        "uri": "http:\/\/www.farina.org\/blog\/categories\/tags\/about.html"
+    }
+]
+JSON;
+        $filterByRafaelCaviquioliContact = function (HotelModel $hotelModel) {
+            return $hotelModel->getContact() == "Rafael Caviquioli";
+        };
+
+        $strategyJsonHotelFileParser = new StrategyJsonHotelFileParser($hotelsJson, $this->validator);
+        $hotelsFiltered = $strategyJsonHotelFileParser->getHotels($filterByRafaelCaviquioliContact);
+
+        $this->assertCount(1, $hotelsFiltered);
+        $first = array_key_first($hotelsFiltered);
+        $this->assertEquals("Rafael Caviquioli", $hotelsFiltered[$first]->getContact());
     }
 }

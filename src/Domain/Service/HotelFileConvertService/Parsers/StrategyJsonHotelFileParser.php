@@ -44,6 +44,10 @@ class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
             }
         }
 
+        if (is_callable($filter)) {
+            return array_filter($hotels, $filter);
+        }
+
         return $hotels;
     }
 }

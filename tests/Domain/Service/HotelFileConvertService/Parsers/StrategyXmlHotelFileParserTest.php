@@ -3,6 +3,7 @@
 namespace App\Tests\Domain\Service\HotelFileConvertService\Parsers;
 
 use App\Domain\BusinessConstraint\HotelBusinessConstraintValidator;
+use App\Domain\Model\HotelModel;
 use App\Domain\Service\HotelFileConvertService\Parsers\StrategyXmlHotelFileParser;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -91,5 +92,49 @@ XML;
         $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($emptyHotelsXml, $this->validator);
         $hotels = $strategyXmlHotelFileParser->getHotels();
         $this->assertCount(0, $hotels);
+    }
+
+    public function testGetHotels_ShouldConvertHotelsAndApplyTheFilter_WhenAFilterIsPassed()
+    {
+        $hotelsXml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<hotels>
+<hotel>
+    <name>The Gibson</name>
+    <address>63847 Lowe Knoll</address>
+    <stars>5</stars>
+    <contact>Dr. Sinda Wyman</contact>
+    <phone>1-270-665-9933x1626</phone>
+    <uri>http://www.paucek.com/search.htm</uri>
+</hotel>
+<hotel>
+    <name>Martini Cattaneo</name>
+    <address>Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)</address>
+    <stars>5</stars>
+    <contact>Rosalino Marchetti</contact>
+    <phone>+39 627 68225719</phone>
+    <uri>http://www.farina.org/blog/categories/tags/about.html</uri>
+</hotel>
+<hotel>
+    <name>Martini Cattaneo</name>
+    <address>Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)</address>
+    <stars>5</stars>
+    <contact>Rafael Caviquioli</contact>
+    <phone>+39 627 68225719</phone>
+    <uri>http://www.farina.org/blog/categories/tags/about.html</uri>
+</hotel>
+</hotels>
+XML;
+
+        $filterByRafaelCaviquioliContact = function (HotelModel $hotelModel) {
+            return $hotelModel->getContact() == "Rafael Caviquioli";
+        };
+
+        $strategyXmlHotelFileParser = new StrategyXmlHotelFileParser($hotelsXml, $this->validator);
+        $hotelsFiltered = $strategyXmlHotelFileParser->getHotels($filterByRafaelCaviquioliContact);
+
+        $this->assertCount(1, $hotelsFiltered);
+        $first = array_key_first($hotelsFiltered);
+        $this->assertEquals("Rafael Caviquioli", $hotelsFiltered[$first]->getContact());
     }
 }

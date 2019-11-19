@@ -18,7 +18,7 @@ class StrategyXmlHotelFileParser implements IStrategyHotelFileParser
         $this->hotelBusinessConstraintValidator = $hotelBusinessConstraintValidator;
     }
 
-    public function getHotels(callable $filter = null) : array
+    public function getHotels(callable $filter = null): array
     {
         if (count($this->hotelsXml->hotel) == 0) {
             return [];
@@ -42,6 +42,10 @@ class StrategyXmlHotelFileParser implements IStrategyHotelFileParser
             if (!$this->hotelBusinessConstraintValidator->hasErrors()) {
                 $hotels[] = $hotelModel;
             }
+        }
+
+        if (is_callable($filter)) {
+            return array_filter($hotels, $filter);
         }
 
         return $hotels;

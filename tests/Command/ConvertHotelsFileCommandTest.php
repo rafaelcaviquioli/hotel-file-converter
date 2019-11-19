@@ -57,4 +57,37 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
             'command'  => $command->getName(),
         ]);
     }
+
+    public function testExecute_ShouldConvertOnlyHotelsWithStarsLevelBiggerOrEqualsTo5_WhenFilterOptionIsPassed()
+    {
+        /* Prepara data */
+        $inputFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
+        $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
+
+        /* Execute use case command */
+        $kernel = static::createKernel();
+        $application = new Application($kernel);
+        $command = $application->find('app:convert-hotels-file');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            'command'  => $command->getName(),
+            'sourceFilePath' => $inputFilePath,
+            'outputFilePath' => $outputFilePath,
+            '--filterStarsBiggerOrEqualsThan' => 5
+        ]);
+
+        /* Define expectations */
+        $hotelsCsv = file_get_contents($outputFilePath);
+        $csvArrayLines = explode(PHP_EOL, $hotelsCsv);
+        $expectLine = '"The Gibson","63847 Lowe Knoll, East Maxine, WA 97030-4876",5,"Dr. Sinda Wyman",1-270-665-9933x1626,http://www.paucek.com/search.htm';
+
+        /* Delete temporary files */
+        unlink($inputFilePath);
+        unlink($outputFilePath);
+
+        /* Assert results */
+        $this->assertEquals($expectLine, $csvArrayLines[0]);
+        $this->assertEquals("", $csvArrayLines[1]);
+        $this->assertCount(2, $csvArrayLines);
+    }
 }
