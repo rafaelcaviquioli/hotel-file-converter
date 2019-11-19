@@ -68,8 +68,7 @@ $ docker-compose run --rm \
     php-fpm php bin/console \
     app:convert-hotels-file \
     ./playground/sourceFiles/hotels.json \
-    ./playground/outputFiled/convertedHotelsFromJson.csv -v \
-    --filterStarsBiggerOrEqualsThan=3
+    ./playground/outputFiled/convertedHotelsFromJson.csv -v
 ```
 
 ### Convert hotels from json file and `apply stars filter`
@@ -79,7 +78,8 @@ $ docker-compose run --rm \
     php-fpm php bin/console \
     app:convert-hotels-file \
     ./playground/sourceFiles/hotels.json \
-    ./playground/outputFiled/convertedHotelsFromJson.csv -v
+    ./playground/outputFiled/convertedHotelsFromJson.csv -v \
+    --filterStarsBiggerOrEqualsThan=3
 ```
 
 ### Convert hotels from xml file
