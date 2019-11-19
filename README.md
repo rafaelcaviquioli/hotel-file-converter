@@ -46,7 +46,7 @@ $ docker-compose run --rm php-fpm php bin/phpunit
 You can keep looking for errors, warnings and hotel model validation problems through log execution:
 
 - Use `-v` argument to active verbose mode and watch log during the converting execution.
-- Logs will be persist on file: `./logs/hotel-convert-dev.log`.
+- Logs will be persist on file: `./var/log/hotel-convert-dev.log`.
 
 #### Convert hotels from json file
 
