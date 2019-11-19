@@ -12,5 +12,5 @@ interface IStrategyHotelFileParser
     );
 
     /** @return App\Domain\Model\HotelModel[] */
-    public function getHotels(): array;
+    public function getHotels(callable $filter = null): array;
 }

@@ -56,13 +56,13 @@ class HotelFileConvertService
         }
     }
 
-    private function getHotels(): array
+    private function getHotels(callable $filter = null): array
     {
         if ($this->inputFileStrategy == null) {
             throw new Exception("Was not possible to get hotels because don't have defined strategy yet.");
         }
 
-        return $this->inputFileStrategy->getHotels();
+        return $this->inputFileStrategy->getHotels($filter);
     }
 
     public function openFile(string $sourceFilePath): void
@@ -74,10 +74,10 @@ class HotelFileConvertService
         $this->inputFileStrategy = $this->getInputFileStrategy($sourceFilePath);
     }
 
-    public function convert(string $outputFilePath): void
+    public function convert(string $outputFilePath, callable $filter = null): void
     {
         $outputFileStrategy = $this->getOutputFileStrategy($outputFilePath);
-        $hotels = $this->getHotels();
+        $hotels = $this->getHotels($filter);
         $totalHotels = count($hotels);
 
         $this->logger->notice("Starting conversion of $totalHotels valid hotels.");

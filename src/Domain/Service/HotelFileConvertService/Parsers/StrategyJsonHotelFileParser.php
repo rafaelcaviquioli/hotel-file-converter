@@ -18,7 +18,7 @@ class StrategyJsonHotelFileParser implements IStrategyHotelFileParser
         $this->hotelBusinessConstraintValidator = $hotelBusinessConstraintValidator;
     }
 
-    public function getHotels(): array
+    public function getHotels(callable $filter = null): array
     {
         if (count($this->hotelsJsonDecoded) == 0) {
             return [];

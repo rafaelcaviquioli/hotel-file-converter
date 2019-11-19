@@ -27,4 +27,15 @@ class HotelModelMother
             )
         ];
     }
+    public static function createAValidHotelAndSetStars(int $stars): HotelModel
+    {
+        return new HotelModel(
+            "Martini Cattaneo",
+            "Stretto Bernardi 004, Quarto Mietta nell'emilia, 07958 Torino (OG)",
+            $stars,
+            "Rosalino Marchetti",
+            "+39 627 68225719",
+            "http://www.farina.org/blog/categories/tags/about.html"
+        );
+    }
 }
