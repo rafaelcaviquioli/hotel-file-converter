@@ -29,24 +29,24 @@ class HotelFileConvertServiceTest extends TestCase
         $hotelFileConvertService->convert("./whateverOutputFile.csv");
     }
 
-    public function testOpenFile_shouldThrowException_WhenTryToOpenAnNonexistentInputFile()
+    public function testOpenFile_shouldThrowException_WhenTryToOpenAnNonexistentSourceFile()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Was not possible open the file: './nonexistentInputFile.json'");
+        $this->expectExceptionMessage("Was not possible open the file: './nonexistentSourceFile.json'");
 
         $hotelFileConvertService = new HotelFileConvertService($this->validator, $this->logger);
-        $hotelFileConvertService->openFile("./nonexistentInputFile.json");
+        $hotelFileConvertService->openFile("./nonexistentSourceFile.json");
     }
 
-    public function testConvert_ShoudCreateACsvFileWithHotels_WhenInputJsonFileHasHotels()
+    public function testConvert_ShoudCreateACsvFileWithHotels_WhenSourceJsonFileHasHotels()
     {
         /* Prepara data */
-        $inputFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
+        $sourceFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
 
         /* Use case execution */
         $hotelFileConvertService = new HotelFileConvertService($this->validator, $this->logger);
-        $hotelFileConvertService->openFile($inputFilePath);
+        $hotelFileConvertService->openFile($sourceFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
         /* Define expectations */
@@ -56,7 +56,7 @@ class HotelFileConvertServiceTest extends TestCase
         $expectLine2 = '"Martini Cattaneo","Stretto Bernardi 004, Quarto Mietta nell\'emilia, 07958 Torino (OG)",4,"Rosalino Marchetti","+39 627 68225719",http://www.farina.org/blog/categories/tags/about.html';
 
         /* Delete temporary files */
-        unlink($inputFilePath);
+        unlink($sourceFilePath);
         unlink($outputFilePath);
 
         /* Assert results */
@@ -66,37 +66,37 @@ class HotelFileConvertServiceTest extends TestCase
         $this->assertCount(3, $csvArrayLines);
     }
 
-    public function testConvert_ShoudCreateACsvFileEmpty_WhenInputJsonFileIsEmpty()
+    public function testConvert_ShoudCreateACsvFileEmpty_WhenSourceJsonFileIsEmpty()
     {
         /* Prepara data */
-        $inputFilePath = HotelFileTestHelper::createTempHotelJsonFileEmpty();
+        $sourceFilePath = HotelFileTestHelper::createTempHotelJsonFileEmpty();
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-empty-" . microtime() . ".csv";
 
         /* Use case execution */
         $hotelFileConvertService = new HotelFileConvertService($this->validator, $this->logger);
-        $hotelFileConvertService->openFile($inputFilePath);
+        $hotelFileConvertService->openFile($sourceFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
         /* Define expectations */
         $hotelsCsv = file_get_contents($outputFilePath);
 
         /* Delete temporary files */
-        unlink($inputFilePath);
+        unlink($sourceFilePath);
         unlink($outputFilePath);
 
         /* Assert results */
         $this->assertEmpty($hotelsCsv);
     }
 
-    public function testConvert_ShoudCreateACsvFileWithHotels_WhenInputXmlFileHasHotels()
+    public function testConvert_ShoudCreateACsvFileWithHotels_WhenSourceXmlFileHasHotels()
     {
         /* Prepara data */
-        $inputFilePath = HotelFileTestHelper::createTempHotelXmlFileWithTwoValidHotels();
+        $sourceFilePath = HotelFileTestHelper::createTempHotelXmlFileWithTwoValidHotels();
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
 
         /* Use case execution */
         $hotelFileConvertService = new HotelFileConvertService($this->validator, $this->logger);
-        $hotelFileConvertService->openFile($inputFilePath);
+        $hotelFileConvertService->openFile($sourceFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
         /* Define expectations */
@@ -106,7 +106,7 @@ class HotelFileConvertServiceTest extends TestCase
         $expectLine2 = '"Martini Cattaneo","Stretto Bernardi 004",5,"Rosalino Marchetti","+39 627 68225719",http://www.farina.org/blog/categories/tags/about.html';
 
         /* Delete temporary files */
-        unlink($inputFilePath);
+        unlink($sourceFilePath);
         unlink($outputFilePath);
 
         /* Assert results */
@@ -116,22 +116,22 @@ class HotelFileConvertServiceTest extends TestCase
         $this->assertCount(3, $csvArrayLines);
     }
 
-    public function testConvert_ShoudCreateACsvFileEmpty_WhenInputXmlFileIsEmpty()
+    public function testConvert_ShoudCreateACsvFileEmpty_WhenSourceXmlFileIsEmpty()
     {
         /* Prepara data */
-        $inputFilePath = HotelFileTestHelper::createTempHotelXmlFileEmpty();
+        $sourceFilePath = HotelFileTestHelper::createTempHotelXmlFileEmpty();
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-empty-" . microtime() . ".csv";
 
         /* Use case execution */
         $hotelFileConvertService = new HotelFileConvertService($this->validator, $this->logger);
-        $hotelFileConvertService->openFile($inputFilePath);
+        $hotelFileConvertService->openFile($sourceFilePath);
         $hotelFileConvertService->convert($outputFilePath);
 
         /* Define expectations */
         $hotelsCsv = file_get_contents($outputFilePath);
 
         /* Delete temporary files */
-        unlink($inputFilePath);
+        unlink($sourceFilePath);
         unlink($outputFilePath);
 
         /* Assert results */

@@ -13,7 +13,7 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
     public function testExecute_ShouldConvertJsonHotelsFileToCsvFile()
     {
         /* Prepara data */
-        $inputFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
+        $sourceFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
 
         /* Execute use case command */
@@ -23,7 +23,7 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command'  => $command->getName(),
-            'sourceFilePath' => $inputFilePath,
+            'sourceFilePath' => $sourceFilePath,
             'outputFilePath' => $outputFilePath,
         ]);
 
@@ -34,7 +34,7 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
         $expectLine2 = '"Martini Cattaneo","Stretto Bernardi 004, Quarto Mietta nell\'emilia, 07958 Torino (OG)",4,"Rosalino Marchetti","+39 627 68225719",http://www.farina.org/blog/categories/tags/about.html';
 
         /* Delete temporary files */
-        unlink($inputFilePath);
+        unlink($sourceFilePath);
         unlink($outputFilePath);
 
         /* Assert results */
@@ -61,7 +61,7 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
     public function testExecute_ShouldConvertOnlyHotelsWithStarsLevelBiggerOrEqualsTo5_WhenFilterOptionIsPassed()
     {
         /* Prepara data */
-        $inputFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
+        $sourceFilePath = HotelFileTestHelper::createTempHotelJsonFileWithTwoValidHotels();
         $outputFilePath = sys_get_temp_dir() . "/hotels-output-" . microtime() . ".csv";
 
         /* Execute use case command */
@@ -71,7 +71,7 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command'  => $command->getName(),
-            'sourceFilePath' => $inputFilePath,
+            'sourceFilePath' => $sourceFilePath,
             'outputFilePath' => $outputFilePath,
             '--filterStarsBiggerOrEqualsThan' => 5
         ]);
@@ -82,7 +82,7 @@ class ConvertHotelsFileCommandTest extends KernelTestCase
         $expectLine = '"The Gibson","63847 Lowe Knoll, East Maxine, WA 97030-4876",5,"Dr. Sinda Wyman",1-270-665-9933x1626,http://www.paucek.com/search.htm';
 
         /* Delete temporary files */
-        unlink($inputFilePath);
+        unlink($sourceFilePath);
         unlink($outputFilePath);
 
         /* Assert results */

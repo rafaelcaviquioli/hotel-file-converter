@@ -26,20 +26,20 @@ class HotelFileTestHelper
             }
         ]
 JSON;
-        $inputFilePath = sys_get_temp_dir() . "/hotels-input-" . microtime() . ".json";
-        file_put_contents($inputFilePath, $hotelsJson);
+        $sourceFilePath = sys_get_temp_dir() . "/hotels-source-" . microtime() . ".json";
+        file_put_contents($sourceFilePath, $hotelsJson);
 
-        return $inputFilePath;
+        return $sourceFilePath;
     }
     public static function createTempHotelJsonFileEmpty(): string
     {
         $hotelsJson = <<<JSON
         []
 JSON;
-        $inputFilePath = sys_get_temp_dir() . "/hotels-input-empty-" . microtime() . ".json";
-        file_put_contents($inputFilePath, $hotelsJson);
+        $sourceFilePath = sys_get_temp_dir() . "/hotels-source-empty-" . microtime() . ".json";
+        file_put_contents($sourceFilePath, $hotelsJson);
 
-        return $inputFilePath;
+        return $sourceFilePath;
     }
     public static function createTempHotelXmlFileWithTwoValidHotels(): string
     {
@@ -64,10 +64,10 @@ JSON;
 </hotel>
 </hotels>
 XML;
-        $inputFilePath = sys_get_temp_dir() . "/hotels-input-" . microtime() . ".xml";
-        file_put_contents($inputFilePath, $hotelsXml);
+        $sourceFilePath = sys_get_temp_dir() . "/hotels-source-" . microtime() . ".xml";
+        file_put_contents($sourceFilePath, $hotelsXml);
 
-        return $inputFilePath;
+        return $sourceFilePath;
     }
     public static function createTempHotelXmlFileEmpty(): string
     {
@@ -75,9 +75,9 @@ XML;
 <?xml version="1.0" encoding="UTF-8"?>
 <hotels></hotels>
 XML;
-        $inputFilePath = sys_get_temp_dir() . "/hotels-input-empty-" . microtime() . ".xml";
-        file_put_contents($inputFilePath, $hotelsJson);
+        $sourceFilePath = sys_get_temp_dir() . "/hotels-source-empty-" . microtime() . ".xml";
+        file_put_contents($sourceFilePath, $hotelsJson);
 
-        return $inputFilePath;
+        return $sourceFilePath;
     }
 }

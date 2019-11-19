@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 
 class HotelFileConvertService
 {
-    private $inputFileStrategy;
+    private $sourceFileStrategy;
     private $fileContent;
     private $hotelBusinessConstraintValidator;
     private $logger;
@@ -26,11 +26,11 @@ class HotelFileConvertService
         $this->logger = $logger;
     }
 
-    private function getInputFileStrategy($sourceFilePath): IStrategyHotelFileParser
+    private function getSourceFileStrategy($sourceFilePath): IStrategyHotelFileParser
     {
         $sourceFilePathInfo = pathinfo($sourceFilePath);
-        $inputFileExtension = $sourceFilePathInfo['extension'];
-        switch ($inputFileExtension) {
+        $sourceFileExtension = $sourceFilePathInfo['extension'];
+        switch ($sourceFileExtension) {
             case "json";
                 return new StrategyJsonHotelFileParser($this->fileContent, $this->hotelBusinessConstraintValidator);
 
@@ -38,7 +38,7 @@ class HotelFileConvertService
                 return new StrategyXmlHotelFileParser($this->fileContent, $this->hotelBusinessConstraintValidator);
 
             default:
-                throw new Exception("Was not possible get the strategy to this file extention: '$inputFileExtension'");
+                throw new Exception("Was not possible get the strategy to this file extention: '$sourceFileExtension'");
         }
     }
 
@@ -58,11 +58,11 @@ class HotelFileConvertService
 
     private function getHotels(callable $filter = null): array
     {
-        if ($this->inputFileStrategy == null) {
+        if ($this->sourceFileStrategy == null) {
             throw new Exception("Was not possible to get hotels because don't have defined strategy yet.");
         }
 
-        return $this->inputFileStrategy->getHotels($filter);
+        return $this->sourceFileStrategy->getHotels($filter);
     }
 
     public function openFile(string $sourceFilePath): void
@@ -71,7 +71,7 @@ class HotelFileConvertService
             throw new Exception("Was not possible open the file: '$sourceFilePath'");
         }
         $this->fileContent = file_get_contents($sourceFilePath);
-        $this->inputFileStrategy = $this->getInputFileStrategy($sourceFilePath);
+        $this->sourceFileStrategy = $this->getSourceFileStrategy($sourceFilePath);
     }
 
     public function convert(string $outputFilePath, callable $filter = null): void
