@@ -26,6 +26,14 @@ The tool comes with a configured filter that filter hotels with stars bigger or 
 --filterStarsBiggerOrEqualsThan=3
 ```
 
+### 2. Logs
+
+You can keep looking for errors, warnings and hotel model validation problems through log execution. The log error will show a dataIndex to help you identify what is the hotel with  data problems.
+
+- Use `-v` argument to active verbose mode and watch log during the converting execution.
+- Logs will be persist on file: `./var/log/hotel-convert-dev.log`.
+
+
 ## Requirements
 
 - Docker
@@ -52,13 +60,6 @@ $ docker-compose run --rm php-fpm php bin/phpunit
 ## Tool commands
 
 `Caution: To convert other files you need ensure that the files are accessible inside Docker environment. For it, put your files on ./playground/sourceFiles or create a new volume between your machine and docker container.`
-
-### Logs
-
-You can keep looking for errors, warnings and hotel model validation problems through log execution:
-
-- Use `-v` argument to active verbose mode and watch log during the converting execution.
-- Logs will be persist on file: `./var/log/hotel-convert-dev.log`.
 
 ### Convert hotels from json file
 

@@ -42,13 +42,30 @@ class HotelBusinessConstraintValidatorTest extends TestCase
 
         $this->assertTrue($validator->hasErrors());
     }
-    public function testGetValidateErrors_ShoudReturnHotelNameError_WhenHotelNameIsNotValid()
+
+    public function testGetValidateErrors_ShoudReturnValidationErrors_WhenHotelHasRequiredFieldsInBlank()
+    {
+        $hotelModel = new HotelModel("", "", 3, "", "", "");
+
+        $validator = new HotelBusinessConstraintValidator($this->logger);
+        $errors = $validator->validate(1, $hotelModel);
+
+        $this->assertCount(6, $errors);
+        $this->assertContains("The hotel name is required.", $errors);
+        $this->assertContains("The hotel address is required.", $errors);
+        $this->assertContains("The hotel contact is required.", $errors);
+        $this->assertContains("The hotel phone is required.", $errors);
+        $this->assertContains("The hotel uri is required.", $errors);
+        $this->assertContains("The hotel uri '' is not a valid URL.", $errors);
+    }
+
+    public function testGetValidateErrors_ShoudReturnValidationErrors_WhenHotelFieldsHasANSCIICharacters()
     {
         $hotelModel = new HotelModel(
             "Hostel Rinaldí",
-            "Via Sala 62 Piano 9, Anselmo umbro, 67695 Pisa (AO)",
+            "Via Sala 62 Píano 9, Anselmo umbro, 67695 Pisa (AO)",
             3,
-            "The Timothy Ferrari",
+            "The Timothý Ferrari",
             "+39 168 21539395",
             "http://www.hostel.biz/post.htm"
         );
@@ -56,8 +73,10 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $validator = new HotelBusinessConstraintValidator($this->logger);
         $errors = $validator->validate(1, $hotelModel);
 
-        $this->assertCount(1, $errors);
-        $this->assertEquals("The hotel name 'Hostel Rinaldí' may not contain non-ASCII characters.", $errors[0]);
+        $this->assertCount(3, $errors);
+        $this->assertContains("The hotel name with value: 'Hostel Rinaldí' may not contain non-ASCII characters.", $errors);
+        $this->assertContains("The hotel contact with value: 'The Timothý Ferrari' may not contain non-ASCII characters.", $errors);
+        $this->assertContains("The hotel address with value: 'Via Sala 62 Píano 9, Anselmo umbro, 67695 Pisa (AO)' may not contain non-ASCII characters.", $errors);
     }
 
     public function testGetValidateErrors_ShoudRegisterLogError_WhenHotelNameIsNotValid()
@@ -76,7 +95,7 @@ class HotelBusinessConstraintValidatorTest extends TestCase
             ->expects($this->once())
             ->method('error')
             ->with(
-                $this->equalTo("The hotel name 'Hostel Rinaldí' may not contain non-ASCII characters."),
+                $this->equalTo("The hotel name with value: 'Hostel Rinaldí' may not contain non-ASCII characters."),
                 $this->equalTo(['dataIndex' => 1])
             );
 
@@ -119,8 +138,8 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $errors = $validator->validate(1, $hotelModel);
 
         $this->assertCount(2, $errors);
-        $this->assertEquals("The hotel uri '' is not a valid URL.", $errors[0]);
-        $this->assertEquals("The hotel uri is required.", $errors[1]);
+        $this->assertContains("The hotel uri '' is not a valid URL.", $errors);
+        $this->assertContains("The hotel uri is required.", $errors);
     }
     public function testGetValidateErrors_ShoudReturnInvalidHotelUriErrors_WhenHotelUriIsInvalid()
     {
@@ -137,7 +156,7 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $errors = $validator->validate(1, $hotelModel);
 
         $this->assertCount(1, $errors);
-        $this->assertEquals("The hotel uri 'thisIsAnInvalidUri' is not a valid URL.", $errors[0]);
+        $this->assertContains("The hotel uri 'thisIsAnInvalidUri' is not a valid URL.", $errors);
     }
     public function testGetValidateErrors_ShoudReturnInvalidStars_WhenHotelIsBiggerThanFiveStars()
     {
@@ -154,7 +173,7 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $errors = $validator->validate(1, $hotelModelTenStars);
 
         $this->assertCount(1, $errors);
-        $this->assertEquals("The hotel stars '10' is invalid. Hotel ratings may be from 0 to 5 stars", $errors[0]);
+        $this->assertContains("The hotel stars '10' is invalid. Hotel ratings may be from 0 to 5 stars", $errors);
     }
     public function testGetValidateErrors_ShoudReturnInvalidStars_WhenHotelIsLesserThan1Star()
     {
@@ -171,6 +190,6 @@ class HotelBusinessConstraintValidatorTest extends TestCase
         $errors = $validator->validate(1, $hotelModelTenStars);
 
         $this->assertCount(1, $errors);
-        $this->assertEquals("The hotel stars '-1' is invalid. Hotel ratings may be from 0 to 5 stars", $errors[0]);
+        $this->assertContains("The hotel stars '-1' is invalid. Hotel ratings may be from 0 to 5 stars", $errors);
     }
 }
