@@ -80,7 +80,7 @@ class HotelFileConvertService
         $hotels = $this->getHotels($filter);
         $totalHotels = count($hotels);
 
-        $this->logger->notice("Starting conversion of $totalHotels valid hotels.");
+        $this->logger->notice("Found $totalHotels valid hotels.");
 
         $outputFilePointer = fopen($outputFilePath, 'w');
         foreach ($outputFileStrategy->convert($hotels) as $hotelCsvLine) {
